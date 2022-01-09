@@ -56,12 +56,14 @@ if not content.get('pageProps', {}).get('passages'):
 # Convert html content to markdown and sanetize content of strange characters
 htmlContent = content['pageProps']['passages'][0]['passageHtml']
 formattedText = html2text.html2text(htmlContent)
-cleanText = re.sub('[#_"]', '', formattedText)
-splitByVerses = re.split('\d+', cleanText)
+cleanText = re.sub('[_"]', '', formattedText)
+cleanText = re.sub('[#]', ' . ', cleanText)
+cleanText = re.sub('[\n]', ' ', cleanText)
+cleanText = re.split('\d+', cleanText)
 
 # Slow down read speed of verse numbers by adding '.' before and after
 newVersesList = []
-for index, verse in enumerate(splitByVerses, 1):
+for index, verse in enumerate(cleanText, 1):
     if index == 1:
         newVersesList.append(verse)
     else:
@@ -71,7 +73,7 @@ finalText = ''.join(newVersesList)
 
 # Append chapter number reading and end doxology
 splitPassage = passageArg.split('+')
-readablePassageText = ''.join(splitPassage)
+readablePassageText = ' '.join(splitPassage)
 titlePassageText = f'{readablePassageText}. In the Legacy Standard Bible. . .'
 doxology = '. . . This is the word of Yahweh. . . Praise be to God.'
 finalTextList = [titlePassageText, finalText, doxology]
@@ -85,7 +87,7 @@ finalTextAppended = ''.join(finalTextList)
 # if not os.path.exists(f"../md/{passageArg}.md"):
 #     mdFilePath = f'../md/{passageArg}.md'
 #     mdFile = open(mdFilePath, 'w')
-#     mdFile.write(clearVerses)
+#     mdFile.write(finalTextAppended)
 #     mdFile.close()
 # *****************************************************
 
@@ -123,6 +125,8 @@ htmlTemplate = f"""
         body {{background-color: #f0edeb;}}
         #media-container {{width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;}}
         img {{width: 250px; height: 250px; border-radius: 50px;}}
+        #btn-container {{display: flex; justify-content: center; width: 100%;}}
+        a {{padding: 10px; color: #fff; background: #c39a6b; border: none; border-radius: 10px; margin: 20px; width: 120px; text-align: center; cursor: pointer; text-decoration: none;}}
     </style>
 </head>
 <body>
@@ -133,6 +137,10 @@ htmlTemplate = f"""
             <source src="../mp3/lsbible-{passageArg}.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio>
+        <div id="btn-container">
+            <a href="index.{splitPassage[0]}+{int(splitPassage[1]) - 1}.html">Previous</a>
+            <a href="index.{splitPassage[0]}+{int(splitPassage[1]) + 1}.html">Next</a>
+        </div>
     </div>
     <script>
         const audioElement = document.getElementById('audio-palyer');
