@@ -15,10 +15,16 @@ some params being passed to it as the web app does.
 ## Set up environment
 
 ```bash
+~ brew install pip
+~ pip install virtualenv
+~ mkdir <dirname>
+~ cd <dirname>
+~ virtualenv .env
+~ source .env/bin/activate
+~ git clone https://github.com/lvstross/audioBible.git
 ~ cd audioBible
-~ source bin/activate
-~ pip install
-~ python3 lsbible.py 1+timothy+1
+~ pip install -r requirements.txt
+~ python lsbible.py 1+timothy+1
 ```
 
 This will generate two files and two folders if they don't already exist:
