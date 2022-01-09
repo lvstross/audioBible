@@ -8,6 +8,27 @@ import html2text
 import webbrowser
 from gtts import gTTS
 
+# ** Functions **
+# TODO: Convert title numbers to words -> 1 Timothy to First Timothy
+# Convert number to proper word
+def convertToWord(num):
+    if num == 1:
+        return 'first'
+    elif num == 2:
+        return 'second'
+    elif num == 3:
+        return 'thrid'
+    else:
+        return num
+
+# Get passage title for file and elements
+def getTitle(title):
+    titleItems = title.split('+')
+    if len(titleItems) == 3:
+        return f'{titleItems[0]} {titleItems[1].capitalize()} {titleItems[2]}'
+    else:
+        return f'{titleItems[0].capitalize()} {titleItems[1]}'
+
 # Validate arguments
 lsAPI = ''
 if len(sys.argv) == 2:
@@ -85,14 +106,6 @@ print('Audio file created at: ' + os.path.realpath('file://' + mp3FilePath))
 # Create html folder if not already exits
 if not os.path.isdir("../html"):
     os.mkdir('../html')
-
-# Get passage title for file and elements
-def getTitle(title):
-    titleItems = title.split('+')
-    if len(titleItems) == 3:
-        return f'{titleItems[0]} {titleItems[1].capitalize()} {titleItems[2]}'
-    else:
-        return f'{titleItems[0].capitalize()} {titleItems[1]}'
 
 htmlFilePath = f'../html/index.{passageArg}.html'
 htmlAudioPlayerFile = open(htmlFilePath, 'w')
