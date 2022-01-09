@@ -3,7 +3,6 @@ import re
 import os
 import sys
 import json
-from typing import final
 import requests
 import html2text
 import webbrowser
