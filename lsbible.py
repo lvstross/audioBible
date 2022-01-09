@@ -3,6 +3,7 @@ import re
 import os
 import sys
 import json
+from typing import final
 import requests
 import html2text
 import webbrowser
@@ -32,17 +33,49 @@ if not content.get('pageProps', {}).get('passages'):
     print('No verses found!')
     sys.exit()
 
-# Convert html content to markdown and sanetize content
+# Convert html content to markdown and sanetize content of strange characters
 htmlContent = content['pageProps']['passages'][0]['passageHtml']
 formattedText = html2text.html2text(htmlContent)
-cleanText = re.sub('[#_]', '', formattedText)
+cleanText = re.sub('[#_"]', '', formattedText)
+splitByVerses = re.split('\d+', cleanText)
+
+# Slow down read speed of verse numbers by adding '.' before and after
+newVersesList = []
+for index, verse in enumerate(splitByVerses, 1):
+    if index == 1:
+        newVersesList.append(verse)
+    else:
+        newVersesList.append(f' . {index} . {verse}')
+
+finalText = ''.join(newVersesList)
+
+# Append chapter number reading and end doxology
+splitPassage = passageArg.split('+')
+readablePassageText = ''.join(splitPassage)
+titlePassageText = f'{readablePassageText}. In the Legacy Standard Bible. . .'
+doxology = '. . . This is the word of Yahweh. . . Praise be to God.'
+finalTextList = [titlePassageText, finalText, doxology]
+finalTextAppended = ''.join(finalTextList)
+
+# Preview markdown content being fed to gTTS
+# *****************************************************
+# if not os.path.isdir("../md"):
+#     os.mkdir('../md')
+
+# if not os.path.exists(f"../md/{passageArg}.md"):
+#     mdFilePath = f'../md/{passageArg}.md'
+#     mdFile = open(mdFilePath, 'w')
+#     mdFile.write(clearVerses)
+#     mdFile.close()
+# *****************************************************
+
 
 # Create mp3 folder if not already exists
 if not os.path.isdir("../mp3"):
     os.mkdir('../mp3')
 
 # Convert to audio using Google Text To Speech
-audioObject = gTTS(text=cleanText, lang='en', slow=False)
+audioObject = gTTS(text=finalTextAppended, lang='en', slow=False)
 mp3FilePath = f'../mp3/lsbible-{passageArg}.mp3'
 audioObject.save(mp3FilePath)
 
@@ -104,4 +137,7 @@ htmlAudioPlayerFile.close()
 print('Audio Player File Created')
 
 # Opens the html audio player
-webbrowser.open('file://' + os.path.realpath(htmlFilePath))
+browser = webbrowser
+# Open in other broswers using this method (https://stackoverflow.com/questions/22445217/python-webbrowser-open-to-open-chrome-browser)
+brave_path = 'open -a /Applications/Brave\ Browser.app %s'
+browser.get(brave_path).open('file://' + os.path.realpath(htmlFilePath))
