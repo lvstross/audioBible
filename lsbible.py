@@ -38,6 +38,7 @@ else:
     sys.exit()
 
 passageArg = sys.argv[1]
+print(f'Generating {passageArg}!')
 
 # Load the response, check it's status and get json content
 res = requests.get(lsAPI)
@@ -58,6 +59,8 @@ htmlContent = content['pageProps']['passages'][0]['passageHtml']
 formattedText = html2text.html2text(htmlContent)
 cleanText = re.sub('[_"]', '', formattedText)
 cleanText = re.sub('[#]', ' . ', cleanText)
+# ISSUE: all none verse numbers in the text are effected by this
+# need to differentiate between verse number and number in text.
 cleanText = re.sub('[\n]', ' ', cleanText)
 cleanText = re.split('\d+', cleanText)
 
@@ -138,7 +141,7 @@ htmlTemplate = f"""
             Your browser does not support the audio element.
         </audio>
         <div id="btn-container">
-            <a href="index.{splitPassage[0]}+{int(splitPassage[1]) - 1}.html">Previous</a>
+            {'<a href="index.{splitPassage[0]}+{int(splitPassage[1]) - 1}.html">Previous</a>' if int(splitPassage[1]) - 1 > 0 else ''}
             <a href="index.{splitPassage[0]}+{int(splitPassage[1]) + 1}.html">Next</a>
         </div>
     </div>
@@ -157,7 +160,7 @@ htmlAudioPlayerFile.close()
 print('Audio Player File Created')
 
 # Opens the html audio player
-browser = webbrowser
+# browser = webbrowser
 # Open in other broswers using this method (https://stackoverflow.com/questions/22445217/python-webbrowser-open-to-open-chrome-browser)
-brave_path = 'open -a /Applications/Brave\ Browser.app %s'
-browser.get(brave_path).open('file://' + os.path.realpath(htmlFilePath))
+# brave_path = 'open -a /Applications/Brave\ Browser.app %s'
+# browser.get(brave_path).open('file://' + os.path.realpath(htmlFilePath))
