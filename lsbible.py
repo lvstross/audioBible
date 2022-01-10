@@ -59,18 +59,21 @@ htmlContent = content['pageProps']['passages'][0]['passageHtml']
 formattedText = html2text.html2text(htmlContent)
 cleanText = re.sub('[_"]', '', formattedText)
 cleanText = re.sub('[#]', ' . ', cleanText)
-# ISSUE: all none verse numbers in the text are effected by this
-# need to differentiate between verse number and number in text.
 cleanText = re.sub('[\n]', ' ', cleanText)
-cleanText = re.split('\d+', cleanText)
+cleanText = re.split('(\d+)', cleanText)
 
 # Slow down read speed of verse numbers by adding '.' before and after
 newVersesList = []
-for index, verse in enumerate(cleanText, 1):
-    if index == 1:
-        newVersesList.append(verse)
+verseIteration = 2
+for verse in cleanText:
+    if verse.isdigit():
+        if int(verse) == verseIteration:
+            verseIteration += 1
+            newVersesList.append(f' . {verse} . ')
+        else:
+            newVersesList.append(verse)
     else:
-        newVersesList.append(f' . {index} . {verse}')
+        newVersesList.append(verse)
 
 finalText = ''.join(newVersesList)
 
@@ -159,8 +162,8 @@ htmlAudioPlayerFile.close()
 
 print('Audio Player File Created')
 
-# Opens the html audio player
-# browser = webbrowser
+# Opens the html audio player - Enable for opening browser window directly after generating
 # Open in other broswers using this method (https://stackoverflow.com/questions/22445217/python-webbrowser-open-to-open-chrome-browser)
+# browser = webbrowser
 # brave_path = 'open -a /Applications/Brave\ Browser.app %s'
 # browser.get(brave_path).open('file://' + os.path.realpath(htmlFilePath))
