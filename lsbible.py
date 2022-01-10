@@ -1,4 +1,5 @@
 #!/bin/python3
+from io import TextIOWrapper
 import re
 import os
 import sys
@@ -11,7 +12,7 @@ from gtts import gTTS
 # ** Functions **
 # Convert title numbers to words -> 1 Timothy to First Timothy
 def convertTitleNumber(title: list):
-    firstTitle = title[0]
+    firstTitle: str = title[0]
     if firstTitle.isdigit():
         if firstTitle == '1':
             return f'first {title[1]} {title[2]}'
@@ -24,22 +25,22 @@ def convertTitleNumber(title: list):
 
 # Get passage title for file and elements
 def getTitle(title: str):
-    titleItems = title.split('+')
+    titleItems: list = title.split('+')
     if len(titleItems) == 3:
         return f'{titleItems[0]} {titleItems[1].capitalize()} {titleItems[2]}'
     else:
         return f'{titleItems[0].capitalize()} {titleItems[1]}'
 
 # Validate arguments
-lsAPI = ''
+lsAPI: str = ''
 if len(sys.argv) == 2:
     lsAPI = 'https://read.lsbible.org/_next/data/hwK9Y2vY5vtu_f-_dhmal/index.json?q=' + sys.argv[1]
 else:
     print('Chapter Not Provided!')
     sys.exit()
 
-passageArg = sys.argv[1]
-splitPassage = passageArg.split('+')
+passageArg: str = sys.argv[1]
+splitPassage: list = passageArg.split('+')
 print(f'Generating {passageArg}!')
 
 # Load the response, check it's status and get json content
@@ -49,7 +50,7 @@ if not res.status_code == 200:
     print('Request Failed!')
     sys.exit()
 
-content = json.loads(res.text)
+content: dict = json.loads(res.text)
 
 # Validate that response contains passages
 if not content.get('pageProps', {}).get('passages'):
@@ -57,16 +58,16 @@ if not content.get('pageProps', {}).get('passages'):
     sys.exit()
 
 # Convert html content to markdown and sanetize content of strange characters
-htmlContent = content['pageProps']['passages'][0]['passageHtml']
-formattedText = html2text.html2text(htmlContent)
-cleanText = re.sub('[_"]', '', formattedText)
-cleanText = re.sub('[#]', ' . ', cleanText)
-cleanText = re.sub('[\n]', ' ', cleanText)
-cleanText = re.split('(\d+)', cleanText)
+htmlContent: str = content['pageProps']['passages'][0]['passageHtml']
+formattedText: str = html2text.html2text(htmlContent)
+cleanText: str = re.sub('[_"]', '', formattedText)
+cleanText: str = re.sub('[#]', ' . ', cleanText)
+cleanText: str = re.sub('[\n]', ' ', cleanText)
+cleanText: str = re.split('(\d+)', cleanText)
 
 # Slow down read speed of verse numbers by adding '.' before and after
-newVersesList = []
-verseIteration = 2
+newVersesList: list = []
+verseIteration: int = 2
 for verse in cleanText:
     if verse.isdigit():
         if int(verse) == verseIteration:
@@ -77,14 +78,14 @@ for verse in cleanText:
     else:
         newVersesList.append(verse)
 
-finalText = ''.join(newVersesList)
+finalText: str = ''.join(newVersesList)
 
 # Append chapter number reading and end doxology
-readablePassageText = convertTitleNumber(splitPassage)
-titlePassageText = f'{readablePassageText}. In the Legacy Standard Bible. . .'
-doxology = '. . . This is the word of Yahweh. . . Praise be to God.'
-finalTextList = [titlePassageText, finalText, doxology]
-finalTextAppended = ''.join(finalTextList)
+readablePassageText: str = convertTitleNumber(splitPassage)
+titlePassageText: str = f'{readablePassageText}. In the Legacy Standard Bible. . .'
+doxology: str = '. . . This is the word of Yahweh. . . Praise be to God.'
+finalTextList: list = [titlePassageText, finalText, doxology]
+finalTextAppended: str = ''.join(finalTextList)
 
 # Preview markdown content being fed to gTTS
 # *****************************************************
@@ -104,8 +105,8 @@ if not os.path.isdir("../mp3"):
     os.mkdir('../mp3')
 
 # Convert to audio using Google Text To Speech
-audioObject = gTTS(text=finalTextAppended, lang='en', slow=False)
-mp3FilePath = f'../mp3/lsbible-{passageArg}.mp3'
+audioObject: gTTS = gTTS(text=finalTextAppended, lang='en', slow=False)
+mp3FilePath: str = f'../mp3/lsbible-{passageArg}.mp3'
 audioObject.save(mp3FilePath)
 
 print('Audio file created at: ' + os.path.realpath('file://' + mp3FilePath))
@@ -116,11 +117,11 @@ print('Audio file created at: ' + os.path.realpath('file://' + mp3FilePath))
 if not os.path.isdir("../html"):
     os.mkdir('../html')
 
-htmlFilePath = f'../html/index.{passageArg}.html'
-htmlAudioPlayerFile = open(htmlFilePath, 'w')
-title = getTitle(passageArg)
+htmlFilePath: str = f'../html/index.{passageArg}.html'
+htmlAudioPlayerFile: TextIOWrapper = open(htmlFilePath, 'w')
+title: str = getTitle(passageArg)
 
-htmlTemplate = f"""
+htmlTemplate: str = f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,6 +166,6 @@ print('Audio Player File Created')
 
 # Opens the html audio player - Enable for opening browser window directly after generating
 # Open in other broswers using this method (https://stackoverflow.com/questions/22445217/python-webbrowser-open-to-open-chrome-browser)
-# browser = webbrowser
-# brave_path = 'open -a /Applications/Brave\ Browser.app %s'
-# browser.get(brave_path).open('file://' + os.path.realpath(htmlFilePath))
+browser = webbrowser
+brave_path: str = 'open -a /Applications/Brave\ Browser.app %s'
+browser.get(brave_path).open('file://' + os.path.realpath(htmlFilePath))
