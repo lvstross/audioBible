@@ -9,20 +9,21 @@ import webbrowser
 from gtts import gTTS
 
 # ** Functions **
-# TODO: Convert title numbers to words -> 1 Timothy to First Timothy
-# Convert number to proper word
-def convertToWord(num):
-    if num == 1:
-        return 'first'
-    elif num == 2:
-        return 'second'
-    elif num == 3:
-        return 'thrid'
+# Convert title numbers to words -> 1 Timothy to First Timothy
+def convertTitleNumber(title: list):
+    firstTitle = title[0]
+    if firstTitle.isdigit():
+        if firstTitle == '1':
+            return f'first {title[1]} {title[2]}'
+        elif firstTitle == '2':
+            return f'second {title[1]} {title[2]}'
+        elif firstTitle == '3':
+            return f'thrid {title[1]} {title[2]}'
     else:
-        return num
+        return title
 
 # Get passage title for file and elements
-def getTitle(title):
+def getTitle(title: str):
     titleItems = title.split('+')
     if len(titleItems) == 3:
         return f'{titleItems[0]} {titleItems[1].capitalize()} {titleItems[2]}'
@@ -38,6 +39,7 @@ else:
     sys.exit()
 
 passageArg = sys.argv[1]
+splitPassage = passageArg.split('+')
 print(f'Generating {passageArg}!')
 
 # Load the response, check it's status and get json content
@@ -78,8 +80,7 @@ for verse in cleanText:
 finalText = ''.join(newVersesList)
 
 # Append chapter number reading and end doxology
-splitPassage = passageArg.split('+')
-readablePassageText = ' '.join(splitPassage)
+readablePassageText = convertTitleNumber(splitPassage)
 titlePassageText = f'{readablePassageText}. In the Legacy Standard Bible. . .'
 doxology = '. . . This is the word of Yahweh. . . Praise be to God.'
 finalTextList = [titlePassageText, finalText, doxology]
@@ -150,7 +151,7 @@ htmlTemplate = f"""
     </div>
     <script>
         const audioElement = document.getElementById('audio-palyer');
-        audioElement.defaultPlaybackRate = 1.5;
+        audioElement.defaultPlaybackRate = 1.25;
         audioElement.load();
     </script>
 </body>
