@@ -1,4 +1,4 @@
-#!/bin/python3
+#!bin/python3
 from io import TextIOWrapper
 import re
 import os
@@ -166,6 +166,6 @@ print('Audio Player File Created')
 
 # Opens the html audio player - Enable for opening browser window directly after generating
 # Open in other broswers using this method (https://stackoverflow.com/questions/22445217/python-webbrowser-open-to-open-chrome-browser)
-browser = webbrowser
-brave_path: str = 'open -a /Applications/Brave\ Browser.app %s'
-browser.get(brave_path).open('file://' + os.path.realpath(htmlFilePath))
+# browser = webbrowser
+# brave_path: str = 'open -a /Applications/Brave\ Browser.app %s'
+# browser.get(brave_path).open('file://' + os.path.realpath(htmlFilePath))
