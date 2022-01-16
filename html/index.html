@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSB Audio Bible - Genesis 1</title>
+    <link rel="stylesheet" href="styles.css" type="text/css">
+</head>
+<body>
+    <div id="media-container">
+        <div class="select-container">
+            <div>
+                <label for="books">Book:</label>
+                <select name="books" id="bible-books">
+                </select>
+            </div>
+            <div>
+                <label for="chapter">Chapter:</label>
+                <select name="chapter" id="bible-chapters">
+                </select>
+            </div>
+        </div>
+        <button id="go-button" class="go-btn">Go</button>
+        <img src="https://read.lsbible.org/images/lsb-logo-gradient.svg" alt="lsb logo">
+        <h1 id="current-signature" center>Genesis 1</h1>
+        <audio controls id="audio-palyer">
+            <source id="audio-source" src="../../mp3/lsbible-genesis+1.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <div class="btn-container">
+            <button id="speed-1x" class="round-btn">1X</button>
+            <button id="speed-1.25x" class="round-btn">1.25X</button>
+            <button id="speed-1.5x" class="round-btn">1.5X</button>
+        </div>
+        <div class="btn-container">
+            <button id="prev-btn" class="direction-btn">Previous</button>
+            <button id="next-btn" class="direction-btn">Next</button>
+        </div>
+    </div>
+    <script defer src="scripts.js"></script>
+</body>
+</html>
