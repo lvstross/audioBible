@@ -8,22 +8,29 @@
     <link rel="stylesheet" href="styles.css" type="text/css">
 </head>
 <body>
-    <div id="media-container">
-        <div class="select-container">
-            <div>
-                <label for="books">Book:</label>
-                <select name="books" id="bible-books">
-                </select>
-            </div>
-            <div>
-                <label for="chapter">Chapter:</label>
-                <select name="chapter" id="bible-chapters">
-                </select>
-            </div>
+    <nav class="flex-row select-container">
+        <div>
+            <label for="books">Book:</label>
+            <select name="books" id="bible-books">
+            </select>
         </div>
-        <button id="go-button" class="go-btn">Go</button>
-        <img src="https://read.lsbible.org/images/lsb-logo-gradient.svg" alt="lsb logo">
-        <h1 id="current-signature" center>Genesis 1</h1>
+        <div>
+            <label for="chapter">Chapter:</label>
+            <select name="chapter" id="bible-chapters">
+            </select>
+        </div>
+        <div>
+            <button id="go-button" class="go-btn">Go</button>
+        </div>
+    </nav>
+    <main id="media-container">
+        <img id="logo" src="./assets/lsb-logo-gradient.svg" alt="lsb logo">
+        <div class="flex-row">
+            <h1 id="current-signature" center>Genesis 1</h1>
+            <a id="open-link" href="https://read.lsbible.org/?q=genesis+1" target="_blank">
+                <img id="open-icon" src="./assets/lsbible-open.png" alt="open chapter text">
+            </a>
+        </div>
         <audio controls id="audio-palyer">
             <source id="audio-source" src="../../mp3/lsbible-genesis+1.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
@@ -34,10 +41,17 @@
             <button id="speed-1.5x" class="round-btn">1.5X</button>
         </div>
         <div class="btn-container">
-            <button id="prev-btn" class="direction-btn">Previous</button>
-            <button id="next-btn" class="direction-btn">Next</button>
+            <button id="prev-btn" class="direction-btn">&lt; Previous</button>
+            <button id="next-btn" class="direction-btn">Next &gt;</button>
         </div>
-    </div>
+    </main>
+    <footer class="flex-row" id="footer-container">
+        <p>Scripture quotations taken from the (LSB®) Legacy Standard Bible®, Copyright © <span id="copy-year">2021</span> by The Lockman Foundation. Used by permission. All rights reserved. Managed in partnership with Three Sixteen Publishing Inc. <a target="_blank" href="http://lsbible.org/">LSBible.org</a> and <a target="_blank" href="http://316publishing.com/">316publishing.com</a></p>
+    </footer>
     <script defer src="scripts.js"></script>
 </body>
 </html>
+<!-- @TODO:
+    1. Added screen reader features for the blind.
+    2. Add disclaimer information
+-->
