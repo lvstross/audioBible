@@ -1,12 +1,10 @@
 #!bin/python3
-from io import TextIOWrapper
 import re
 import os
 import sys
 import json
 import requests
 import html2text
-import webbrowser
 from gtts import gTTS
 
 # ** Functions **
