@@ -42,10 +42,14 @@ splitPassage: list = passageArg.split('+')
 print(f'Generating {passageArg}!')
 
 # Load the response, check it's status and get json content
-res = requests.get(lsAPI)
+try:
+    res = requests.get(lsAPI)
 
-if not res.status_code == 200:
-    print('Request Failed!')
+    if not res.status_code == 200:
+        print('Request Failed!')
+        sys.exit()
+except:
+    print('Remote connection failed! Aborting Process')
     sys.exit()
 
 content: dict = json.loads(res.text)
