@@ -37,3 +37,5 @@ This will generate two files and two folders if they don't already exist:
 ```
 
 This python environment was generated using [virtualenv](https://pythonbasics.org/virtualenv/)
+
+<img src="./html/assets/screen-shot.png" >
