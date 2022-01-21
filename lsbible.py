@@ -106,9 +106,14 @@ finalTextAppended: str = ''.join(finalTextList)
 if not os.path.isdir("../mp3"):
     os.mkdir('../mp3')
 
-# Convert to audio using Google Text To Speech
-audioObject: gTTS = gTTS(text=finalTextAppended, lang='en', slow=False)
-mp3FilePath: str = f'../mp3/lsbible-{passageArg}.mp3'
-audioObject.save(mp3FilePath)
+try:
+    # Convert to audio using Google Text To Speech
+    audioObject: gTTS = gTTS(text=finalTextAppended, lang='en', slow=False)
+    mp3FilePath: str = f'../mp3/lsbible-{passageArg}.mp3'
+    audioObject.save(mp3FilePath)
+except:
+    print('Audio File Generation Failed! Removing file.')
+    os.remove(mp3FilePath)
+    sys.exit()
 
 print('Audio file created at: ' + os.path.realpath('file://' + mp3FilePath))
