@@ -117,3 +117,9 @@ except:
     sys.exit()
 
 print('Audio file created at: ' + os.path.realpath('file://' + mp3FilePath))
+
+# Speed up the file play back rate to 1.4x more than it's default
+has_ffmpeg_installed = os.popen('where ffmpeg').read()
+# Check if ffmpeg is installed
+if '/ffmpeg' in has_ffmpeg_installed:
+    os.popen(f"ffmpeg -i {mp3FilePath} -af \"atempo=1.4\" {mp3FilePath}")
