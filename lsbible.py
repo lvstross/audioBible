@@ -32,6 +32,7 @@ def getTitle(title: str):
 # Validate arguments
 lsAPI: str = ''
 if len(sys.argv) == 2:
+    # @NOTE: this url doesn't work any more. the text is now being rendered on the server and is no longer available as an api
     lsAPI = 'https://read.lsbible.org/_next/data/hwK9Y2vY5vtu_f-_dhmal/index.json?q=' + sys.argv[1]
 else:
     print('Chapter Not Provided!')
@@ -65,22 +66,22 @@ formattedText: str = html2text.html2text(htmlContent)
 cleanText: str = re.sub('[_"]', '', formattedText)
 cleanText: str = re.sub('[#]', ' . ', cleanText)
 cleanText: str = re.sub('[\n]', ' ', cleanText)
-cleanText: str = re.split('(\d+)', cleanText)
+finalText: str = re.split('(\d+)', cleanText)
 
 # Slow down read speed of verse numbers by adding '.' before and after
-newVersesList: list = []
-verseIteration: int = 2
-for verse in cleanText:
-    if verse.isdigit():
-        if int(verse) == verseIteration:
-            verseIteration += 1
-            newVersesList.append(f' . {verse} . ')
-        else:
-            newVersesList.append(verse)
-    else:
-        newVersesList.append(verse)
+# newVersesList: list = []
+# verseIteration: int = 2
+# for verse in cleanText:
+#     if verse.isdigit():
+#         if int(verse) == verseIteration:
+#             verseIteration += 1
+#             newVersesList.append(f' . {verse} . ')
+#         else:
+#             newVersesList.append(verse)
+#     else:
+#         newVersesList.append(verse)
 
-finalText: str = ''.join(newVersesList)
+# finalText: str = ''.join(newVersesList)
 
 # Append chapter number reading and end doxology
 readablePassageText: str = convertTitleNumber(splitPassage)
@@ -91,25 +92,25 @@ finalTextAppended: str = ''.join(finalTextList)
 
 # Preview markdown content being fed to gTTS
 # *****************************************************
-# if not os.path.isdir("../md"):
-#     os.mkdir('../md')
+if not os.path.isdir("../md"):
+    os.mkdir('../md')
 
-# if not os.path.exists(f"../md/{passageArg}.md"):
-#     mdFilePath = f'../md/{passageArg}.md'
-#     mdFile = open(mdFilePath, 'w')
-#     mdFile.write(finalTextAppended)
-#     mdFile.close()
+if not os.path.exists(f"../md/{passageArg}.md"):
+    mdFilePath = f'../md/{passageArg}.md'
+    mdFile = open(mdFilePath, 'w')
+    mdFile.write(finalTextAppended)
+    mdFile.close()
 # *****************************************************
-
+sys.exit()
 
 # Create mp3 folder if not already exists
-if not os.path.isdir("../mp3"):
-    os.mkdir('../mp3')
+if not os.path.isdir("../mp3_new"):
+    os.mkdir('../mp3_new')
 
 try:
     # Convert to audio using Google Text To Speech
     audioObject: gTTS = gTTS(text=finalTextAppended, lang='en', slow=False)
-    mp3FilePath: str = f'../mp3/lsbible-{passageArg}.mp3'
+    mp3FilePath: str = f'../mp3_new/lsbible-{passageArg}.mp3'
     audioObject.save(mp3FilePath)
 except:
     print('Audio File Generation Failed! Removing file.')
